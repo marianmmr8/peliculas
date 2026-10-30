@@ -1,5 +1,10 @@
 <?php
-$id = $_GET["id"];
-echo $id;
+require_once __DIR__ . "/../clases/directorDao.php";
+$directorDAO = new DirectorDao();
 
+$id = $_GET["id"]?? null;
+
+$directorDAO->eliminar($id);
+header("Location: index.php");
+exit;
 ?>
