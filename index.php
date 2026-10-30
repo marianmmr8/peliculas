@@ -8,6 +8,7 @@ $directorDao = new DirectorDAO();
 //funcion creada para que muestre la base de datos
 
 $directores = $directorDao->getAll();
+$miDirector = $directorDao->getById(10);
 
 
 ?>
@@ -20,8 +21,10 @@ $directores = $directorDao->getAll();
 </head>
 <body>
     <?php  foreach($directores as $d):?>
-        <p><?= $d->getNombre() ?> - <?=  $d->getAnioNacimiento()?></p>
+        <h2><?= $d->getNombre() ?> - <?=  $d->getAnioNacimiento()?></h2>
+        <p><?=  $d->getBiografia() ?></p>
         <?php endforeach;?>
-    
+    <h2>Mi director favorito es :</h2>
+    <p><?=  $miDirector->getNombre() ?></p>
 </body>
 </html>

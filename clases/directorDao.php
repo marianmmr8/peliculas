@@ -38,6 +38,25 @@ return $directores;
 
 }
 
+public function getById(int $id): ?Director{
+    $sql = "SELECT * FROM director WHERE id = :id";
+
+    $stmt = $this ->conexion->prepare($sql);
+    $stmt->execute(["id"=> $id]);
+
+    $fila = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$fila){
+        return null;
+    }
+    return new Director (
+        $fila["nombre"],
+    $fila["nacimiento"],
+    $fila["biografia"],
+    $fila["id"]
+    );
+
+}
 
 
 
