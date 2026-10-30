@@ -13,11 +13,13 @@ private PDO $conexion;
 
 public function __construct()
 {
+    //aqui se realiza la conexion
     global $servidor, $nombreBase, $usuario, $password;
 
     $dsn = "mysql:host=$servidor;dbname=$nombreBase;charset=utf8mb4";
     $this->conexion = new PDO($dsn, $usuario, $password);
 }
+// esta funcion devuelve un array con todos los registros de l atabla director
 public function getAll():array{
     $sql = "SELECT * FROM director";
 
@@ -37,7 +39,7 @@ $directores[] = new Director(
 return $directores;
 
 }
-
+// esta funcion busca un director por su id
 public function getById(int $id): ?Director{
     $sql = "SELECT * FROM director WHERE id = :id";
 
@@ -57,17 +59,44 @@ public function getById(int $id): ?Director{
     );
 
 }
+//crea un nuevo director
+public function setDirector(Director $director): bool{
+    $sql = "INSERT INTO director (nombre,nacimiento,biografia) VALUES(:nombre,:nacimiento,:biografia)";
 
+    $stmt = $this->conexion->prepare($sql);
+    return $stmt->execute([
+        "nombre" => $director->getNombre(),
+        "nacimiento" => $director->getAnioNacimiento(),
+        "biografia" =>$director->getBiografia()
+    ]);
+}
+//modificar un director
 
+public function actualizar(Director $director):bool{
+    $sql = "UPDATE director
+    SET nombre =:nombre,
+    nacimiento =:nacimiento,
+    biografia =:biografia
+    WHERE id= :id";
 
+      $stmt = $this->conexion->prepare($sql);
+    return $stmt->execute([
+        "nombre" => $director->getNombre(),
+        "nacimiento" => $director->getAnioNacimiento(),
+        "biografia" =>$director->getBiografia(),
+        "id" => $director->getId()
+    ]);
+}
 
-
-
+//eliminar
+public function eliminar(int $id):bool{
+    $sql = "DELETE FROM director WHERE id = :id";
+    $stmt = $this->conexion->prepare ($sql);
+    return $stmt->execute(["id" => $id]);
 
 }
 
 
 
-
-
+}
 ?>
