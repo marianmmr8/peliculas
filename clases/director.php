@@ -1,6 +1,5 @@
-// aqui estan los datos que queremos que se vean id, nombre, año de nacimiento y biorafia
-
 <?php
+// aqui estan los datos que queremos que se vean id, nombre, año de nacimiento y biorafia
 class Director{
     //propiedades o atributos
     private ?int $id;
