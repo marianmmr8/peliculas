@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . "/../../clases/peliculasDao.php";
-$peliculaDAO = new peliculasDao();
+require_once __DIR__ . "/../../clases/peliculasDAO.php";
+$peliculaDAO = new peliculasDAO();
 
 $id = $_GET["id"]?? null;
 

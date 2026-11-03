@@ -69,7 +69,7 @@ $listaDirectores = $directorDAO->getAll();
 
     <?php  if ($vista  === "peliculas"):?>
       <h2>Mostrar la lista de peliculas</h2>
-       <a class="nuevo" href="formPelicula.php">Nuevo Pelicula</a>
+       <a class="nuevo" href="pelicula/formPeliculas.php">Nueva película</a>
 
     <table >
         <thead>
@@ -93,11 +93,17 @@ $listaDirectores = $directorDAO->getAll();
             <td><?= $pelicula->getDirector() ?></td>
             <td><?= $pelicula->getAnio() ?></td>
             <td><?= $pelicula->getGenero() ?></td>
-            <td><?= $pelicula->getImagen() ?></td>
+            <td>
+              <?php if ($pelicula->getImagen() !== ''): ?>
+                <img src="../images/<?= htmlspecialchars($pelicula->getImagen(), ENT_QUOTES, 'UTF-8') ?>" alt="Carátula de <?= htmlspecialchars($pelicula->getTitulo(), ENT_QUOTES, 'UTF-8') ?>" width="80">
+              <?php else: ?>
+                Sin imagen
+              <?php endif; ?>
+            </td>
             <td><?= $pelicula->getVisto() ? 'Vista' : "No" ?></td>
 
-            <td><a href="formPelicula.php?id=<?=  $pelicula->getId() ?>">Modificar</a></td>
-            <td><a href="eliminarPelicula.php?id=<?=  $pelicula->getId() ?>">Eliminar</a></td>
+            <td><a href="pelicula/formPeliculas.php?id=<?=  $pelicula->getId() ?>">Modificar</a></td>
+            <td><a href="pelicula/eliminarPelicula.php?id=<?=  $pelicula->getId() ?>">Eliminar</a></td>
 
         </tr>
         <?php endforeach; ?>
