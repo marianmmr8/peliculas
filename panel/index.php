@@ -1,9 +1,19 @@
 <?php
+$vista =$_GET['vista'] ?? 'peliculas';
 
+if($vista === 'peliculas'){
+  require_once __DIR__ . "/../clases/peliculasDAO.php";
+  $peliculasDAO = new peliculasDAO();
+  $listaPeliculas =$peliculasDAO->getAll();
+}
+if($vista === 'directores'){
 require_once __DIR__ . "/../clases/directorDao.php";
-
 $directorDAO = new DirectorDao();
 $listaDirectores = $directorDAO->getAll();
+}
+
+
+
 
 // var_dump($listaDirectores);
 
@@ -21,9 +31,16 @@ $listaDirectores = $directorDAO->getAll();
 <body>
   <main>
     <h1>Panel de control</h1>
-    <a class="nuevo" href="formDirector.php">Nuevo director</a>
+    <nav>
+      <ul>
+      <li><a href="index.php?vista=directores">Directores</a></li>
+      <li><a href="index.php?vista=peliculas">Peliculas</a></li>
+      </ul>
+    </nav>
+    <?php  if ($vista  === "directores"):?>
+    <a class="nuevo" href="director/formDirector.php">Nuevo director</a>
 
-    <table>
+    <table >
         <thead>
       <tr>
         <th>Nombre</th>
@@ -34,18 +51,59 @@ $listaDirectores = $directorDAO->getAll();
       </tr>
       </thead>
       <tbody>
+
     <?php foreach($listaDirectores as $director): ?>
         <tr>
             <td><?= $director->getNombre() ?></td>
             <td><?= $director->getAnioNacimiento() ?></td>
             <td><?= $director->getBiografia() ?></td>
-            <td><a href="formDirector.php?id=<?=  $director->getId() ?>">Modificar</a></td>
-            <td><a href="eliminarDirector.php?id=<?=  $director->getId() ?>">Eliminar</a></td>
+            <td><a href="director/formDirector.php?id=<?=  $director->getId() ?>">Modificar</a></td>
+            <td><a href="director/eliminarDirector.php?id=<?=  $director->getId() ?>">Eliminar</a></td>
 
         </tr>
         <?php endforeach; ?>
         </tbody>
     </table>
+
+    <?php endif; ?>
+
+    <?php  if ($vista  === "peliculas"):?>
+      <h2>Mostrar la lista de peliculas</h2>
+       <a class="nuevo" href="formPelicula.php">Nuevo Pelicula</a>
+
+    <table >
+        <thead>
+      <tr>
+        <th>Titulo</th>
+        <th>Director</th>
+        <th>Año</th>
+        <th>Género</th>
+        <th>Imagen</th>
+        <th>Vista</th>
+        <th>Modificar</th>
+        <th>Eliminar</th>
+      </tr>
+      </thead>
+      <tbody>
+
+    <?php foreach($listaPeliculas as $pelicula): ?>
+    
+      <tr>
+            <td><?= $pelicula->getTitulo() ?></td>
+            <td><?= $pelicula->getDirector() ?></td>
+            <td><?= $pelicula->getAnio() ?></td>
+            <td><?= $pelicula->getGenero() ?></td>
+            <td><?= $pelicula->getImagen() ?></td>
+            <td><?= $pelicula->getVisto() ? 'Vista' : "No" ?></td>
+
+            <td><a href="formPelicula.php?id=<?=  $pelicula->getId() ?>">Modificar</a></td>
+            <td><a href="eliminarPelicula.php?id=<?=  $pelicula->getId() ?>">Eliminar</a></td>
+
+        </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+    <?php endif; ?>
   </main>
 </body>
 </html>

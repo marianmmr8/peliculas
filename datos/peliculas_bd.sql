@@ -36,6 +36,21 @@ CREATE TABLE `director` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Estructura de tabla para la tabla `peliculas`
+--
+
+CREATE TABLE IF NOT EXISTS `peliculas` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `titulo` varchar(150) NOT NULL,
+  `director` varchar(120) NOT NULL,
+  `anio` int(11) NOT NULL,
+  `genero` varchar(80) NOT NULL,
+  `imagen` varchar(255) NOT NULL,
+  `visto` tinyint(1) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
 -- Volcado de datos para la tabla `director`
 --
 

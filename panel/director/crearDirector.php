@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../clases/directorDao.php";
+require_once __DIR__ . "/../../clases/directorDao.php";
 $directorDAO = new DirectorDao();
 $id = $_POST['id']  ?? "";
 $nombre = $_POST["nombre"] ?? "";
@@ -17,6 +17,6 @@ $directorDAO->setDirector($directorNuevo);
 }
 
 
-header("Location: index.php");
+header("Location: ../index.php?vista=directores");
 exit;
 ?>

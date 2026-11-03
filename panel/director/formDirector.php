@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../clases/directorDao.php";
+require_once __DIR__ . "/../../clases/directorDao.php";
 $directorDAO = new DirectorDao();
 //tenemos que comprobar si es para crear un nuevo director o modificar uno existente
 $director = null;
@@ -13,7 +13,7 @@ $director =$directorDAO->getById($_GET["id"]);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Director</title>
-    <link rel="stylesheet" href="../css/panel.css">
+    <link rel="stylesheet" href="../../css/panel.css">
 </head>
 <body>
     <form action="crearDirector.php" method="POST">
