@@ -62,6 +62,22 @@ public function getById(int $id): ?Usuario{
 
 }
 
+public function existeNombre(string $nombre, ?int $idExcluir = null): bool
+{
+    $sql = "SELECT COUNT(*) FROM usuario WHERE nombre = :nombre";
+    $parametros = ["nombre" => $nombre];
+
+    if ($idExcluir !== null) {
+        $sql .= " AND id <> :id";
+        $parametros["id"] = $idExcluir;
+    }
+
+    $stmt = $this->conexion->prepare($sql);
+    $stmt->execute($parametros);
+
+    return (int) $stmt->fetchColumn() > 0;
+}
+
 public function setUsuario(Usuario $usuario): bool{
     $sql = "INSERT INTO usuario (nombre, password) VALUES(:nombre,:password)";
 
@@ -121,17 +137,14 @@ public function eliminar(int $id):bool{
 }
 
 public function existeUsuario(string $nombre, string $password){
-  $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-
-  $sql ="SELECT * FROM usuario WHERE nombre = :nombre";
+  $sql = "SELECT * FROM usuario WHERE nombre = :nombre";
 
   $stmt = $this->conexion->prepare($sql);
-
-  $stmt->execute(["password" => $passwordHash, "nombre" => $nombre]);
+  $stmt->execute(["nombre" => $nombre]);
 
   $fila  = $stmt->fetch(PDO::FETCH_ASSOC);
 
-  if(!$fila){
+  if (!$fila || !password_verify($password, $fila["password"])) {
     return null;
   }
 return new Usuario(

@@ -43,6 +43,7 @@ Para crear registros se usan `setDirector($director)` y `setPelicula($pelicula)`
 ### Panel y formularios
 
 - `panel/index.php`: selecciona la vista con `?vista=directores` o `?vista=peliculas`, consulta el DAO y muestra el listado.
+- `panel/usuario/crearUsuario.php` y `panel/usuario/formUsuario.php`: crean o modifican usuarios y muestran un aviso si el nombre ya está en uso.
 - `panel/director/formDirector.php` y `panel/pelicula/formPeliculas.php`: muestran formularios nuevos o cargan un registro cuando reciben `?id=...`.
 - `crearDirector.php` y `crearPelicula.php`: reciben los datos `POST` y crean o actualizan según venga un ID.
 - `eliminarDirector.php` y `eliminarPelicula.php`: reciben el ID y llaman al método `eliminar()`.

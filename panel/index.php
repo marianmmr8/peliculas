@@ -1,4 +1,30 @@
 <?php
+session_start();
+
+require_once __DIR__ . "/../clases/usuarioDAO.php";
+$usuarioDAO = new UsuarioDAO();
+
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+  $nombre = $_POST["nombre"] ?? "";
+  $passwordLogin = $_POST["password"] ?? "";
+  $usuarioLogin = $usuarioDAO->existeUsuario($nombre, $passwordLogin);
+
+  if ($usuarioLogin === null) {
+    $_SESSION["mensaje"] = "Los datos no son correctos.";
+    header("Location: login.php");
+    exit();
+  }
+
+  $_SESSION["nombre"] = $usuarioLogin->getNombre();
+}
+
+if (empty($_SESSION["nombre"])) {
+  header("Location: login.php");
+  exit();
+}
+
+
+
 $vista =$_GET['vista'] ?? 'peliculas';
 
 if($vista === 'peliculas'){
@@ -25,6 +51,7 @@ $listaUsuarios = $usuarioDAO->getAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de control</title>
+    <h2>Hola <?=  $_SESSION['nombre'] ?> <span> <a href="cerrar.php">Cerrar Sesion</a></span></h2>
     <link rel="stylesheet" href="../css/panel.css">
 </head>
 <body>
