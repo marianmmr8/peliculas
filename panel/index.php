@@ -12,7 +12,7 @@ $directorDAO = new DirectorDao();
 $listaDirectores = $directorDAO->getAll();
 }
 if($vista === 'usuarios'){
-require_once __DIR__ . "/../clases/usuarioDao.php";
+require_once __DIR__ . "/../clases/usuarioDAO.php";
 $usuarioDAO = new UsuarioDao();
 $listaUsuarios = $usuarioDAO->getAll();
 }
@@ -108,8 +108,11 @@ $listaUsuarios = $usuarioDAO->getAll();
         </tr>
         <?php endforeach; ?>
 
+        </tbody>
+    </table>
+    <?php endif; ?>
 
- <?php  if ($vista  === "usuarios"):?>
+    <?php if ($vista === "usuarios"): ?>
     <a class="nuevo" href="usuario/formUsuario.php">Nuevo Usuario</a>
 
     <table >
@@ -136,10 +139,6 @@ $listaUsuarios = $usuarioDAO->getAll();
         </tbody>
     </table>
 
-    <?php endif; ?>
-
-        </tbody>
-    </table>
     <?php endif; ?>
   </main>
 </body>

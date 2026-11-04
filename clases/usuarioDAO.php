@@ -82,7 +82,7 @@ $passwordAnterior =$usuario->getPassword();
 
 if($passwordAnterior === ''){
  $sql = "UPDATE usuario
-    SET nombre =:nombre,
+    SET nombre =:nombre
     WHERE id= :id";
 
       $stmt = $this->conexion->prepare($sql);

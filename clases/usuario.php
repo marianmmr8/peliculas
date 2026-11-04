@@ -9,7 +9,7 @@ class Usuario{
     {
         $this->id = $id;
         $this->nombre = $nombre;
-        $this->id = $password;
+        $this->password = $password;
     }
 
     //get es pra devolver el valor d elos atributos
