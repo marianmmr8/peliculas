@@ -8,6 +8,8 @@ $id = $_POST["id"] ?? "";
 $idUsuario = $id !== "" ? (int) $id : null;
 $nombre = $_POST["nombre"] ?? "";
 $password = $_POST["password"] ?? "";
+$rol = $_POST['rol'] ?? '';
+
 $urlFormulario = "formUsuario.php" . ($idUsuario !== null ? "?id=" . $idUsuario : "");
 
 if ($usuarioDAO->existeNombre($nombre, $idUsuario)) {
@@ -18,10 +20,10 @@ if ($usuarioDAO->existeNombre($nombre, $idUsuario)) {
 
 try {
     if ($idUsuario !== null) {
-        $usuarioModificado = new Usuario($nombre, $password, $idUsuario);
+        $usuarioModificado = new Usuario($nombre, $password, $rol, $idUsuario);
         $usuarioDAO->actualizar($usuarioModificado);
     } else {
-        $usuarioNuevo = new Usuario($nombre, $password);
+        $usuarioNuevo = new Usuario($nombre, $password, $rol);
         $usuarioDAO->setUsuario($usuarioNuevo);
     }
 } catch (PDOException $error) {

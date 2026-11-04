@@ -34,6 +34,7 @@ public function getAll():array{
 $usuarios[] = new Usuario(
     $fila["nombre"],
     $fila["password"],
+     $fila['rol'],
     $fila["id"]
 
 );
@@ -57,6 +58,7 @@ public function getById(int $id): ?Usuario{
     return new Usuario (
     $fila["nombre"],
     $fila["password"],
+     $fila['rol'],
     $fila["id"]
     );
 
@@ -79,7 +81,7 @@ public function existeNombre(string $nombre, ?int $idExcluir = null): bool
 }
 
 public function setUsuario(Usuario $usuario): bool{
-    $sql = "INSERT INTO usuario (nombre, password) VALUES(:nombre,:password)";
+    $sql = "INSERT INTO usuario (nombre, password, rol) VALUES(:nombre,:password, :rol)";
 
 $passwordHash = password_hash($usuario->getPassword(), PASSWORD_DEFAULT);
 
@@ -88,6 +90,7 @@ $passwordHash = password_hash($usuario->getPassword(), PASSWORD_DEFAULT);
     return $stmt->execute([
         "nombre" => $usuario->getNombre(),
         "password" => $passwordHash,
+        "rol"=> $usuario-> getRol()
         
     ]);
 }
@@ -98,19 +101,22 @@ $passwordAnterior =$usuario->getPassword();
 
 if($passwordAnterior === ''){
  $sql = "UPDATE usuario
-    SET nombre =:nombre
+    SET nombre =:nombre,
+    rol = :rol
     WHERE id= :id";
 
       $stmt = $this->conexion->prepare($sql);
 
     return $stmt->execute([
         "nombre" => $usuario->getNombre(),
-        "id" => $usuario->getId()
+        "id" => $usuario->getId(),
+        "rol"=> $usuario->getRol()
     ]);
 }else{
     $passwordHash = password_hash($usuario->getPassword(), PASSWORD_DEFAULT);
     $sql = "UPDATE usuario
     SET nombre =:nombre,
+    rol = :rol
         password = :password
     WHERE id= :id";
 
@@ -119,6 +125,7 @@ if($passwordAnterior === ''){
     return $stmt->execute([
         "nombre" => $usuario->getNombre(),
         "password" => $passwordHash,
+         "rol"=> $usuario->getRol(),
         "id" => $usuario->getId()
     ]);
 
@@ -150,6 +157,7 @@ public function existeUsuario(string $nombre, string $password){
 return new Usuario(
     $fila['nombre'],
     $fila['password'],
+    $fila['rol'],
     $fila['id']
   );
 }

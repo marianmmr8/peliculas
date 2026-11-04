@@ -32,6 +32,12 @@ $usuario =$usuarioDAO->getById($_GET["id"]);
 <label for="password">Contraseña</label>
 <input type="password" name ="password">
 
+<label for="rol">Rol</label>
+<select name="rol" id="">
+    <option value="usuario">Usuario</option>
+    <option value="admin">Admin</option>
+</select>
+
 <input type="submit" value="Enviar">
 
     </form>

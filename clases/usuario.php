@@ -4,12 +4,14 @@ class Usuario{
     private ?int $id;
     private string $nombre;
     private string $password;
+    private string $rol;
 
-    public function __construct(string $nombre, string $password, ?int $id = null)
+    public function __construct(string $nombre, string $password, ? string $rol ="usuario", ?int $id = null)
     {
         $this->id = $id;
         $this->nombre = $nombre;
         $this->password = $password;
+        $this->rol = $rol;
     }
 
     //get es pra devolver el valor d elos atributos
@@ -23,7 +25,9 @@ public function getNombre():string {
     public function getPassword():string {
         return $this->password;
     }
-
+public function getRol():string {
+        return $this->rol;
+}
     //los setters son para cambiar el valor d elos atributos
 
     public function setId(int $id){
@@ -34,6 +38,9 @@ public function getNombre():string {
     }
      public function setPassword(string $password){
         $this->password = $password;
+    }
+public function setRol(string $rol){
+        $this->rol = $rol;
     }
 
 
