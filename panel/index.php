@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     header("Location: login.php");
     exit();
   }
-
+  $_SESSION["id"] = $usuarioLogin->getId();
   $_SESSION["nombre"] = $usuarioLogin->getNombre();
   $_SESSION['rol'] = $usuarioLogin->getRol();
   
@@ -53,6 +53,7 @@ $listaUsuarios = $usuarioDAO->getAll();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de control</title>
     <h2>Hola <?=  $_SESSION['nombre'] ?> <span> <a href="cerrar.php">Cerrar Sesion</a></span></h2>
+    <a href="perfilphp">Ver Perfil</a>
     <link rel="stylesheet" href="../css/panel.css">
 </head>
 <body>
@@ -62,7 +63,10 @@ $listaUsuarios = $usuarioDAO->getAll();
       <ul>
       <li><a href="index.php?vista=directores">Directores</a></li>
       <li><a href="index.php?vista=peliculas">Peliculas</a></li>
+      <?php if ($vista === "usuarios" && $_SESSION['rol'] ==="admin"): ?>
       <li><a href="index.php?vista=usuarios">Usuarios</a></li>
+   <?php endif; ?>
+
       </ul>
     </nav>
     <?php  if ($vista  === "directores"):?>
