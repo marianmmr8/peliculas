@@ -16,8 +16,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   }
 
   $_SESSION["nombre"] = $usuarioLogin->getNombre();
+  $_SESSION['rol'] = $usuarioLogin->getRol();
+  
 }
-
 if (empty($_SESSION["nombre"])) {
   header("Location: login.php");
   exit();
@@ -139,7 +140,7 @@ $listaUsuarios = $usuarioDAO->getAll();
     </table>
     <?php endif; ?>
 
-    <?php if ($vista === "usuarios"): ?>
+    <?php if ($vista === "usuarios" && $_SESSION['rol'] ==="admin"): ?>
     <a class="nuevo" href="usuario/formUsuario.php">Nuevo Usuario</a>
 
     <table >
@@ -147,6 +148,7 @@ $listaUsuarios = $usuarioDAO->getAll();
       <tr>
         <th>Nombre</th>
         <th>Password</th>
+        <th>Rol</th>
         <th>Modificar</th>
         <th>Eliminar</th>
       </tr>
@@ -154,6 +156,7 @@ $listaUsuarios = $usuarioDAO->getAll();
       <tbody>
 
     <?php foreach($listaUsuarios as $usuario): ?>
+       <?php if ($usuario->getId() !== 2): ?>
         <tr>
             <td><?= $usuario->getNombre() ?></td>
             <td><?= $usuario->getPassword() ?></td>
@@ -162,6 +165,7 @@ $listaUsuarios = $usuarioDAO->getAll();
             <td><a href="usuario/eliminarUsuario.php?id=<?=  $usuario->getId() ?>">Eliminar</a></td>
 
         </tr>
+        <?php endif; ?>
         <?php endforeach; ?>
         </tbody>
     </table>

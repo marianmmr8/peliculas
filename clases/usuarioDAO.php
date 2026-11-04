@@ -137,6 +137,9 @@ if($passwordAnterior === ''){
 
 
 public function eliminar(int $id):bool{
+    if($id === 2){
+        return false;
+    }
     $sql = "DELETE FROM usuario WHERE id = :id";
     $stmt = $this->conexion->prepare ($sql);
     return $stmt->execute(["id" => $id]);
