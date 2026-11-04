@@ -11,12 +11,11 @@ require_once __DIR__ . "/../clases/directorDao.php";
 $directorDAO = new DirectorDao();
 $listaDirectores = $directorDAO->getAll();
 }
-
-
-
-
-// var_dump($listaDirectores);
-
+if($vista === 'usuarios'){
+require_once __DIR__ . "/../clases/usuarioDao.php";
+$usuarioDAO = new UsuarioDao();
+$listaUsuarios = $usuarioDAO->getAll();
+}
 
 
 
@@ -35,6 +34,7 @@ $listaDirectores = $directorDAO->getAll();
       <ul>
       <li><a href="index.php?vista=directores">Directores</a></li>
       <li><a href="index.php?vista=peliculas">Peliculas</a></li>
+      <li><a href="index.php?vista=usuarios">Usuarios</a></li>
       </ul>
     </nav>
     <?php  if ($vista  === "directores"):?>
@@ -107,6 +107,37 @@ $listaDirectores = $directorDAO->getAll();
 
         </tr>
         <?php endforeach; ?>
+
+
+ <?php  if ($vista  === "usuarios"):?>
+    <a class="nuevo" href="usuario/formUsuario.php">Nuevo Usuario</a>
+
+    <table >
+        <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Password</th>
+        <th>Modificar</th>
+        <th>Eliminar</th>
+      </tr>
+      </thead>
+      <tbody>
+
+    <?php foreach($listaUsuarios as $usuario): ?>
+        <tr>
+            <td><?= $usuario->getNombre() ?></td>
+            <td><?= $usuario->getPassword() ?></td>
+            
+            <td><a href="usuario/formUsuario.php?id=<?=  $usuario->getId() ?>">Modificar</a></td>
+            <td><a href="usuario/eliminarUsuario.php?id=<?=  $usuario->getId() ?>">Eliminar</a></td>
+
+        </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+
+    <?php endif; ?>
+
         </tbody>
     </table>
     <?php endif; ?>

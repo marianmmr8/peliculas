@@ -2,7 +2,48 @@
 require_once __DIR__ . "/../../clases/peliculasDAO.php";
 $peliculaDAO = new peliculasDAO();
 
-function subirImagen(?array $archivo): ?string
+/**
+ * Genera un nombre seguro para la imagen a partir del título y el ID.
+ * Translitera acentos, elimina caracteres no alfanuméricos y usa guiones
+ * como separadores entre palabras.
+ *
+ * @param string $titulo Título de la película.
+ * @param int $id Identificador de la película.
+ * @param string $extension Extensión validada de la imagen, sin punto.
+ * @return string Nombre normalizado con el ID y la extensión.
+ * @throws RuntimeException Si no se puede convertir el título a texto ASCII.
+ */
+function generarNombreImagen(string $titulo, int $id, string $extension): string
+{
+    $tituloAscii = iconv("UTF-8", "ASCII//TRANSLIT//IGNORE", $titulo);
+    if ($tituloAscii === false) {
+        throw new RuntimeException("No se pudo generar el nombre de la imagen.");
+    }
+
+    $tituloNormalizado = strtolower($tituloAscii);
+    $tituloNormalizado = preg_replace("/[^a-z0-9]+/", "-", $tituloNormalizado);
+    $tituloNormalizado = trim($tituloNormalizado, "-");
+
+    if ($tituloNormalizado === "") {
+        $tituloNormalizado = "pelicula";
+    }
+
+    return $tituloNormalizado . "-" . $id . "." . $extension;
+}
+
+/**
+ * Valida y guarda una imagen subida en la carpeta images del proyecto.
+ *
+ * Comprueba el estado de la subida, el tamaño máximo, que sea una imagen
+ * admitida y que la carpeta de destino permita escribir.
+ *
+ * @param array|null $archivo Datos de $_FILES o null si no se envió archivo.
+ * @param string $titulo Título usado para crear el nombre del archivo.
+ * @param int $id ID usado para distinguir la imagen de otras películas.
+ * @return string|null Nombre guardado, o null si no se seleccionó una imagen.
+ * @throws RuntimeException Si la subida o el guardado no es válido.
+ */
+function subirImagen(?array $archivo, string $titulo, int $id): ?string
 {
     if ($archivo === null || $archivo["error"] === UPLOAD_ERR_NO_FILE) {
         return null;
@@ -39,7 +80,7 @@ function subirImagen(?array $archivo): ?string
         throw new RuntimeException("La carpeta de imágenes no existe o no permite guardar archivos.");
     }
 
-    $nombreImagen = bin2hex(random_bytes(16)) . "." . $extensionesPermitidas[$tipoImagen];
+    $nombreImagen = generarNombreImagen($titulo, $id, $extensionesPermitidas[$tipoImagen]);
     $rutaDestino = $directorioImagenes . DIRECTORY_SEPARATOR . $nombreImagen;
 
     if (!move_uploaded_file($archivo["tmp_name"], $rutaDestino)) {
@@ -54,30 +95,43 @@ $director = $_POST["director"] ?? "";
 $anio = (int) ($_POST ["anio"] ?? 0);
 $genero = $_POST ["genero"]?? "";
 try {
-    $imagenSubida = subirImagen($_FILES["imagen"] ?? null);
+    $visto = isset($_POST["visto"]);
+
+    if ($id) {
+        $idPelicula = (int) $id;
+        $peliculaExistente = $peliculaDAO->getById($idPelicula);
+        if ($peliculaExistente === null) {
+            http_response_code(404);
+            exit("No se encontró la película que intentas modificar.");
+        }
+
+        $imagenSubida = subirImagen($_FILES["imagen"] ?? null, $titulo, $idPelicula);
+        $imagen = $imagenSubida ?? $peliculaExistente->getImagen();
+        $peliculaModificada = new peliculas($titulo, $director, $anio, $genero, $imagen, $visto, $idPelicula);
+        $peliculaDAO->actualizar($peliculaModificada);
+    } else {
+        $peliculaNueva = new peliculas($titulo, $director, $anio, $genero, "", $visto);
+        $idNuevo = $peliculaDAO->setPelicula($peliculaNueva);
+
+        try {
+            $imagenSubida = subirImagen($_FILES["imagen"] ?? null, $titulo, $idNuevo);
+            if ($imagenSubida !== null) {
+                $peliculaNueva->setId($idNuevo);
+                $peliculaNueva->setImagen($imagenSubida);
+                if (!$peliculaDAO->actualizar($peliculaNueva)) {
+                    throw new RuntimeException("No se pudo asociar la imagen con la película.");
+                }
+            }
+        } catch (RuntimeException $error) {
+            $peliculaDAO->eliminar($idNuevo);
+            http_response_code(400);
+            exit(htmlspecialchars($error->getMessage(), ENT_QUOTES, 'UTF-8'));
+        }
+    }
 } catch (RuntimeException $error) {
     http_response_code(400);
     exit(htmlspecialchars($error->getMessage(), ENT_QUOTES, 'UTF-8'));
 }
-$visto = isset($_POST["visto"]);
-//si existe el id se puede modificar la pelicula
-if($id){
-$peliculaExistente = $peliculaDAO->getById((int) $id);
-if ($peliculaExistente === null) {
-    http_response_code(404);
-    exit("No se encontró la película que intentas modificar.");
-}
-$imagen = $imagenSubida ?? $peliculaExistente->getImagen();
-$peliculaModificado = new peliculas($titulo, $director, $anio, $genero, $imagen, $visto, (int) $id);
-$peliculaDAO->actualizar($peliculaModificado);
-
-}else{
-
-$imagen = $imagenSubida ?? "";
-$peliculaNuevo = new peliculas($titulo, $director, $anio, $genero, $imagen, $visto);
-$peliculaDAO->setPelicula($peliculaNuevo);
-}
-
 
 header("Location: ../index.php?vista=peliculas");
 exit;

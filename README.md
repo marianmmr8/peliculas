@@ -49,6 +49,35 @@ Para crear registros se usan `setDirector($director)` y `setPelicula($pelicula)`
 
 ### Subida de carátulas
 
-El formulario de películas usa `multipart/form-data`. `subirImagen()` en `panel/pelicula/crearPelicula.php` valida el archivo (JPG, PNG, WEBP o GIF, máximo 5 MB), crea un nombre aleatorio y lo guarda en `images/`. En la base de datos se guarda el nombre del archivo, no su contenido. Al editar, si no se selecciona otra imagen, se conserva la existente.
+El formulario de películas usa `multipart/form-data`. `subirImagen()` en `panel/pelicula/crearPelicula.php` valida el archivo (JPG, PNG, WEBP o GIF, máximo 5 MB) y lo guarda en `images/` con un nombre formado por el título normalizado, el ID de la película y la extensión (por ejemplo, `amelie-12.webp`). `generarNombreImagen()` elimina acentos y caracteres especiales y sustituye los espacios por guiones. En la base de datos se guarda el nombre del archivo, no su contenido. Al editar, si no se selecciona otra imagen, se conserva la existente.
 
 `css/panel.css` da estilo tanto al listado como a los formularios. Las carátulas se muestran desde `images/`.
+
+## Documentación de funciones y métodos
+
+Las clases PHP incluyen PHPDoc sobre cada método para explicar su propósito, los datos que recibe y lo que devuelve. Resumen:
+
+### Modelos
+
+- `peliculas::__construct()` inicializa todos los datos de una película. `getId()`, `getTitulo()`, `getDirector()`, `getAnio()`, `getGenero()`, `getImagen()` y `getVisto()` consultan cada propiedad. Los métodos `setId()`, `setTitulo()`, `setDirector()`, `setAnio()`, `setGenero()`, `setImagen()` y `setVisto()` actualizan la propiedad correspondiente.
+- `Director::__construct()` inicializa los datos de un director. `getId()`, `getNombre()`, `getAnioNacimiento()` y `getBiografia()` consultan sus propiedades; `setId()`, `setNombre()`, `setAnionacimiento()` y `setBiografia()` las actualizan. `__toString()` genera una frase con el nombre y el año de nacimiento.
+
+### Acceso a datos
+
+- En `peliculasDAO`, `__construct()` abre la conexión a MySQL/MariaDB; `getAll()` recupera todas las películas; `getById()` busca una por ID; `setPelicula()` inserta una y devuelve el ID generado; `actualizar()` modifica una película existente; `eliminar()` borra una por ID.
+- En `directorDao`, `__construct()` abre la conexión a la base de datos; `getAll()` recupera todos los directores; `getById()` busca uno por ID; `setDirector()` inserta un director; `actualizar()` modifica uno existente; `eliminar()` borra uno por ID.
+
+### Funciones de carátulas
+
+- `generarNombreImagen($titulo, $id, $extension)` convierte el título a texto ASCII, lo pasa a minúsculas, reemplaza los grupos de caracteres especiales por guiones y añade el ID y la extensión. Si el título queda vacío, usa `pelicula`.
+- `subirImagen($archivo, $titulo, $id)` devuelve `null` si no se seleccionó archivo. En caso contrario, valida el error de subida, el límite de 5 MB, el tipo real de imagen y la carpeta de destino; después guarda el archivo con el nombre generado y lo devuelve. Si falla una validación o el guardado, lanza `RuntimeException`.
+
+### Scripts del panel
+
+Los siguientes archivos ejecutan su lógica directamente al abrirse o al recibir el formulario; no declaran funciones propias:
+
+- `panel/index.php` selecciona la vista solicitada, obtiene las películas o los directores desde su DAO y genera la tabla correspondiente.
+- `panel/pelicula/formPeliculas.php` y `panel/director/formDirector.php` muestran el formulario vacío o cargan los datos del registro indicado por `id`.
+- `panel/pelicula/crearPelicula.php` crea o actualiza la película, gestiona la carátula y redirige al listado. Si al crear falla la subida, elimina el registro recién insertado para no dejar una película incompleta.
+- `panel/director/crearDirector.php` crea o actualiza un director y redirige al listado.
+- `panel/pelicula/eliminarPelicula.php` y `panel/director/eliminarDirector.php` leen el ID, eliminan el registro correspondiente y vuelven al listado.
