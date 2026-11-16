@@ -52,11 +52,21 @@ $listaUsuarios = $usuarioDAO->getAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de control</title>
-    <h2>Hola <?=  $_SESSION['nombre'] ?> <span> <a href="cerrar.php">Cerrar Sesion</a></span></h2>
-    <a href="perfilphp">Ver Perfil</a>
-    <link rel="stylesheet" href="../css/panel.css">
+    <link rel="stylesheet" href="../css/panel.css?v=3">
 </head>
 <body>
+  <header class="panel-topbar">
+    <a class="panel-brand" href="../index.php">
+      <span class="panel-brand-mark" aria-hidden="true">C</span>
+      <span>CINEFILIA</span>
+      <span class="panel-context">Volver a la portada</span>
+    </a>
+    <div class="panel-user">
+      <span>Hola <?= htmlspecialchars($_SESSION['nombre'], ENT_QUOTES, 'UTF-8') ?></span>
+      <a href="perfil.php">Ver perfil</a>
+      <a class="panel-logout" href="cerrar.php">Cerrar sesión</a>
+    </div>
+  </header>
   <main>
     <h1>Panel de control</h1>
     <nav>

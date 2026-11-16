@@ -12,7 +12,7 @@ unset($_SESSION['mensaje']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar sesión</title>
-    <link rel="stylesheet" href="../css/panel.css">
+    <link rel="stylesheet" href="../css/panel.css?v=3">
 </head>
 <body>
   

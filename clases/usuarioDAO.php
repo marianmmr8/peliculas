@@ -116,7 +116,7 @@ if($passwordAnterior === ''){
     $passwordHash = password_hash($usuario->getPassword(), PASSWORD_DEFAULT);
     $sql = "UPDATE usuario
     SET nombre =:nombre,
-    rol = :rol
+    rol = :rol,
         password = :password
     WHERE id= :id";
 

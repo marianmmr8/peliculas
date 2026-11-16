@@ -2,6 +2,6 @@
 $servidor = "";
 $nombreBase = "";
 $usuario = "";
-$pasword =""
+$password = "";
 
 ?>

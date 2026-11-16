@@ -13,7 +13,7 @@ $director =$directorDAO->getById($_GET["id"]);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Director</title>
-    <link rel="stylesheet" href="../../css/panel.css">
+    <link rel="stylesheet" href="../../css/panel.css?v=3">
 </head>
 <body>
     <form action="crearDirector.php" method="POST">

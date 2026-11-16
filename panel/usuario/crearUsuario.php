@@ -4,13 +4,29 @@ session_start();
 require_once __DIR__ . "/../../clases/usuarioDAO.php";
 $usuarioDAO = new UsuarioDao();
 
-$id = $_POST["id"] ?? "";
-$idUsuario = $id !== "" ? (int) $id : null;
 $nombre = $_POST["nombre"] ?? "";
 $password = $_POST["password"] ?? "";
-$rol = $_POST['rol'] ?? '';
+$desdePerfil = ($_POST["desdePerfil"] ?? "") === "1";
+$rol = $_POST["rol"] ?? "";
+
+if ($desdePerfil) {
+    $idUsuario = (int) ($_SESSION["id"] ?? 0);
+    $usuarioActual = $idUsuario > 0 ? $usuarioDAO->getById($idUsuario) : null;
+    if ($usuarioActual === null) {
+        header("Location: ../login.php");
+        exit;
+    }
+
+    $rol = $usuarioActual->getRol();
+} else {
+    $id = $_POST["id"] ?? "";
+    $idUsuario = $id !== "" ? (int) $id : null;
+}
 
 $urlFormulario = "formUsuario.php" . ($idUsuario !== null ? "?id=" . $idUsuario : "");
+if ($desdePerfil) {
+    $urlFormulario = "../perfil.php";
+}
 
 if ($usuarioDAO->existeNombre($nombre, $idUsuario)) {
     $_SESSION["mensajeUsuario"] = "Usuario ocupado";
@@ -35,6 +51,12 @@ try {
 
     $_SESSION["mensajeUsuario"] = "Usuario ocupado";
     header("Location: " . $urlFormulario);
+    exit;
+}
+
+if ($desdePerfil) {
+    $_SESSION["nombre"] = $nombre;
+    header("Location: ../perfil.php");
     exit;
 }
 
